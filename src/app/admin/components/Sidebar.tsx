@@ -2,7 +2,7 @@
 
 import {usePathname} from "next/navigation"
 import Link from "next/link";
-import { Home, Map, FolderTree, Info, LogOut, User } from "lucide-react";
+import { Home, Map, FolderTree, Info, LogOut, User, Phone } from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import clsx from "clsx";
 
@@ -11,6 +11,7 @@ const navigation = [
   { name: "Tours", href: "/admin/tours", icon: Map },
   { name: "Categories", href: "/admin/categories", icon: FolderTree },
   { name: "Homepage Info", href: "/admin/info", icon: Info },
+  { name: "Contact Info", href: "/admin/contact", icon: Phone },
 ];
 
 export default function Sidebar() {

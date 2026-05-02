@@ -2,51 +2,55 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { client } from "@salah-tours/helpers/client";
+import { ContactInfo } from "@entities/ContactInfo";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required").min(2, "Name must be at least 2 characters"),
+  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  phone: z.string().optional(),
+  subject: z.string().min(1, "Subject is required").min(3, "Subject must be at least 3 characters"),
+  message: z.string().min(1, "Message is required").min(10, "Message must be at least 10 characters"),
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
+  const { data: contactInfo } = useQuery<ContactInfo>({
+    queryKey: ["contact-info"],
+    queryFn: () => client("/contact"),
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    },
+  });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
-
-      // Reset success message after 5 seconds
-      setTimeout(() => setSubmitStatus("idle"), 5000);
-    }, 1500);
-  };
+  const submitContactFormMutation = useMutation({
+    mutationFn: (data: ContactFormData) =>
+      client("/contact-form", {
+        method: "POST",
+        data,
+      }),
+    onSuccess: () => {
+      reset();
+    },
+  });
 
   return (
     <div className="bg-white">
@@ -87,115 +91,159 @@ export default function ContactPage() {
                   Get In Touch
                 </h2>
                 <p className="text-gray-600 mb-8">
-                  We&apos;re here to help and answer any question you might have. We
-                  look forward to hearing from you.
+                  {contactInfo?.description || "We're here to help and answer any question you might have. We look forward to hearing from you."}
                 </p>
 
                 <div className="space-y-6">
                   {/* Phone */}
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-6 h-6 text-primary-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Phone</h3>
-                      <p className="text-gray-600 mt-1">+123 456 789</p>
-                      <p className="text-gray-600">Mon-Fri 9am-6pm</p>
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-6 h-6 text-primary-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Email</h3>
-                      <p className="text-gray-600 mt-1">info@salahtours.com</p>
-                      <p className="text-gray-600">support@salahtours.com</p>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-6 h-6 text-primary-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Office</h3>
-                      <p className="text-gray-600 mt-1">123 Travel Street</p>
-                      <p className="text-gray-600">City, Country 12345</p>
-                    </div>
-                  </div>
-
-                  {/* Social Media */}
-                  <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className="w-6 h-6 text-primary-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Follow Us</h3>
-                      <div className="flex space-x-3 mt-2">
-                        <span className="text-primary-600">Facebook</span>
-                        <span className="text-primary-600">Instagram</span>
-                        <span className="text-primary-600">Twitter</span>
+                  {contactInfo?.phone && (
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-6 h-6 text-primary-700"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Phone</h3>
+                        <p className="text-gray-600 mt-1">{contactInfo.phone}</p>
+                        {contactInfo.workingHours && (
+                          <p className="text-gray-600">{contactInfo.workingHours}</p>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Email */}
+                  {(contactInfo?.email || contactInfo?.supportEmail) && (
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-6 h-6 text-primary-700"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Email</h3>
+                        {contactInfo.email && (
+                          <p className="text-gray-600 mt-1">{contactInfo.email}</p>
+                        )}
+                        {contactInfo.supportEmail && (
+                          <p className="text-gray-600">{contactInfo.supportEmail}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Location */}
+                  {(contactInfo?.address || contactInfo?.city) && (
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-6 h-6 text-primary-700"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Office</h3>
+                        {contactInfo.address && (
+                          <p className="text-gray-600 mt-1">{contactInfo.address}</p>
+                        )}
+                        {contactInfo.city && (
+                          <p className="text-gray-600">{contactInfo.city}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Social Media */}
+                  {(contactInfo?.facebookUrl || contactInfo?.instagramUrl || contactInfo?.twitterUrl) && (
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-6 h-6 text-primary-700"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Follow Us</h3>
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          {contactInfo.facebookUrl && (
+                            <a
+                              href={contactInfo.facebookUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-600 hover:text-primary-700 underline"
+                            >
+                              Facebook
+                            </a>
+                          )}
+                          {contactInfo.instagramUrl && (
+                            <a
+                              href={contactInfo.instagramUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-600 hover:text-primary-700 underline"
+                            >
+                              Instagram
+                            </a>
+                          )}
+                          {contactInfo.twitterUrl && (
+                            <a
+                              href={contactInfo.twitterUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary-600 hover:text-primary-700 underline"
+                            >
+                              Twitter
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </div>
@@ -212,14 +260,20 @@ export default function ContactPage() {
                   Send Us a Message
                 </h2>
 
-                {submitStatus === "success" && (
+                {submitContactFormMutation.isSuccess && (
                   <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
                     Thank you! Your message has been sent successfully. We&apos;ll
                     get back to you soon.
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                {submitContactFormMutation.isError && (
+                  <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+                    Failed to send your message. Please try again later or contact us directly via email or phone.
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit((data) => submitContactFormMutation.mutate(data))} className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label
@@ -231,13 +285,13 @@ export default function ContactPage() {
                       <input
                         type="text"
                         id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
+                        {...register("name")}
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                         placeholder="John Doe"
                       />
+                      {errors.name && (
+                        <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                      )}
                     </div>
 
                     <div>
@@ -250,13 +304,13 @@ export default function ContactPage() {
                       <input
                         type="email"
                         id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
+                        {...register("email")}
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                         placeholder="john@example.com"
                       />
+                      {errors.email && (
+                        <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                      )}
                     </div>
                   </div>
 
@@ -271,12 +325,13 @@ export default function ContactPage() {
                       <input
                         type="tel"
                         id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
+                        {...register("phone")}
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                         placeholder="+123 456 789"
                       />
+                      {errors.phone && (
+                        <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+                      )}
                     </div>
 
                     <div>
@@ -289,13 +344,13 @@ export default function ContactPage() {
                       <input
                         type="text"
                         id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleChange}
-                        required
+                        {...register("subject")}
                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                         placeholder="Tour Inquiry"
                       />
+                      {errors.subject && (
+                        <p className="mt-1 text-sm text-red-600">{errors.subject.message}</p>
+                      )}
                     </div>
                   </div>
 
@@ -308,22 +363,22 @@ export default function ContactPage() {
                     </label>
                     <textarea
                       id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
+                      {...register("message")}
                       rows={6}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition resize-none"
                       placeholder="Tell us about your travel plans..."
                     />
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-600">{errors.message.message}</p>
+                    )}
                   </div>
 
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || submitContactFormMutation.isPending}
                     className="w-full bg-primary-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? "Sending..." : "Send Message"}
+                    {submitContactFormMutation.isPending ? "Sending..." : "Send Message"}
                   </button>
                 </form>
               </div>

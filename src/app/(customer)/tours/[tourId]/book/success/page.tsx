@@ -21,7 +21,7 @@ export default function BookingSuccessPage() {
           </h1>
           
           <p className="text-gray-600 mb-8">
-            Thank you for your booking! We've received your tour reservation and 
+            Thank you for your booking! We&apos;ve received your tour reservation and 
             will contact you shortly to confirm the details.
           </p>
           

@@ -6,13 +6,14 @@ import { Category } from "@entities/Category";
 import { Info } from "@entities/Info";
 import { Stats } from "@entities/Stats";
 import { Image } from "@salah-tours/entities/Image";
+import { ContactInfo } from "@salah-tours/entities/ContactInfo";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
   synchronize: true,
   logging: process.env.NODE_ENV === "development",
-  entities: [Tour, TourDay, Category, Info, Stats, Image],
+  entities: [Tour, TourDay, Category, Info, Stats, Image, ContactInfo],
 });
 
 let initialized = false;

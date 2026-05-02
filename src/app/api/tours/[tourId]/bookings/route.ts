@@ -35,7 +35,7 @@ export async function POST(
     }
 
     // Send notification to Slack
-    const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+    const slackWebhookUrl = process.env.SLACK_BOOKING_WEBHOOK_URL;
 
     if (slackWebhookUrl) {
       try {
@@ -82,16 +82,17 @@ export async function POST(
               ],
             },
             ...(specialRequirements
-              ? [
+              ? ([
                   {
                     type: "section",
-                    // @ts-ignore
-                    text: {
-                      type: "mrkdwn",
-                      text: `*Special Requirements:*\n${specialRequirements}`,
-                    },
+                    fields: [
+                      {
+                        type: "mrkdwn",
+                        text: `*Special Requirements:*\n${specialRequirements}`,
+                      },
+                    ],
                   },
-                ]
+                ] as any)
               : []),
             {
               type: "divider",
@@ -113,7 +114,7 @@ export async function POST(
       }
     } else {
       console.warn(
-        "SLACK_WEBHOOK_URL not configured - skipping Slack notification",
+        "SLACK_BOOKING_WEBHOOK_URL not configured - skipping Slack notification",
       );
     }
 
