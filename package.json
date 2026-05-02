@@ -14,6 +14,7 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@hookform/resolvers": "^3.10.0",
+    "@slack/webhook": "^7.0.9",
     "@tanstack/react-query": "^5.66.0",
     "@types/lodash": "^4.17.15",
     "@types/react-slick": "^0.23.13",
