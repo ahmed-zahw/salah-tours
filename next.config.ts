@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  experimental: {},
+  serverExternalPackages: ['typeorm', 'pg', 'reflect-metadata'],
 };
 
 export default nextConfig;
