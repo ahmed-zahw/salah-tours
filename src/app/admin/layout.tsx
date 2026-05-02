@@ -1,16 +1,16 @@
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Sidebar from "./components/Sidebar";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  // TODO: Add authentication check here
-  const isAuthenticated = true;
+}>) {
+  const { userId } = await auth();
 
-  if (!isAuthenticated) {
-    redirect("/login");
+  if (!userId) {
+    redirect("/sign-in");
   }
 
   return (
