@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Info } from "@entities/Info";
+import { ContactInfo } from "@entities/ContactInfo";
 import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -18,10 +19,19 @@ const Header = () => {
   const path = usePathname();
   const { fixed, placeholderRef } = useNavbarPosition();
 
-  const { data: info } = useQuery<Info>({
+  const { data: info, isLoading: isInfoLoading } = useQuery<Info>({
     queryKey: ["info"],
     queryFn: () => client("/info"),
   });
+
+  const { data: contactInfo } = useQuery<ContactInfo>({
+    queryKey: ["contact-info"],
+    queryFn: () => client("/contact"),
+  });
+
+  if (isInfoLoading) {
+    return <div className="h-12 bg-primary-700 animate-pulse" />;
+  }
 
   return (
     <header className="w-full z-50">
@@ -32,16 +42,37 @@ const Header = () => {
         </div>
 
         <div className="flex gap-8 items-center">
-          <Link href="/fb/salah-tours">
-            <Facebook />
-          </Link>
-          <Link href="/ig/salah-tours">
-            <Instagram />
-          </Link>
-          <Link href="/twitter/salah-tours">
-            <Twitter />
-          </Link>
-          <Link href="/message/salah-tours">
+          {contactInfo?.facebookUrl && (
+            <a 
+              href={contactInfo.facebookUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
+              <Facebook />
+            </a>
+          )}
+          {contactInfo?.instagramUrl && (
+            <a 
+              href={contactInfo.instagramUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
+              <Instagram />
+            </a>
+          )}
+          {contactInfo?.twitterUrl && (
+            <a 
+              href={contactInfo.twitterUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+            >
+              <Twitter />
+            </a>
+          )}
+          <Link href="/contact" aria-label="Contact">
             <MessageCircle />
           </Link>
         </div>
@@ -51,7 +82,7 @@ const Header = () => {
         <MiddleHero className="bg-primary-500 h-24 flex items-center  relative justify-center">
           <div className="bg-primary-800 absolute inset-0 opacity-30" />
           <img
-            src={info?.heroImage?.url}
+            src={info?.heroImage?.url || "/default-hero.jpg"}
             alt="hero"
             className="w-full h-full object-cover"
           />

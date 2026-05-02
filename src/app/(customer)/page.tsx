@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
 import Categories from "./categories/page";
 import { Tour } from "@entities/Tour";
+import { ContactInfo } from "@entities/ContactInfo";
 import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 export default function Home() {
@@ -19,9 +20,19 @@ export default function Home() {
     queryFn: () => client("/tours"),
   });
 
+  const { data: contactInfo } = useQuery<ContactInfo>({
+    queryKey: ["contact-info"],
+    queryFn: () => client("/contact"),
+  });
+
   return (
     <QueryLoader isLoading={isLoading} error={isError}>
-      <FloatingWhatsApp phoneNumber="123456789" accountName="Salah Tours" />
+      {contactInfo?.phone && (
+        <FloatingWhatsApp 
+          phoneNumber={contactInfo.phone} 
+          accountName="Salah Tours" 
+        />
+      )}
       <InfoSection />
       <Categories />
 
