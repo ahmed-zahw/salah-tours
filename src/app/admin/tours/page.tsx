@@ -57,7 +57,7 @@ export default function ToursManagement() {
   return (
     <QueryLoader isLoading={isLoading} error={error}>
       <Toaster />
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0">
         <h1 className="text-2xl font-bold">Tours Management</h1>
         <Link href="/admin/tours/new">
           <Button color="primary" className="flex items-center gap-2">
@@ -85,8 +85,8 @@ export default function ToursManagement() {
           <tbody className="divide-y divide-gray-200">
             {tours?.map((tour) => (
               <tr key={tour.id}>
-                <td className="px-6 py-4 text-sm text-gray-900">{tour.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-500">
+                <td className="px-6 py-4 text-sm text-gray-900 text-wrap">{tour.name}</td>
+                <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-14">
                   {tour.description}
                 </td>
                 <td className="px-6 py-4 text-right text-sm">

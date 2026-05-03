@@ -79,7 +79,7 @@ export default function CategoriesManagement() {
   return (
     <QueryLoader isLoading={isLoading} error={error}>
       <Toaster />
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Categories Management</h1>
         <Link href="/admin/categories/new">
           <Button color="primary" className="flex items-center gap-2">
@@ -103,7 +103,7 @@ export default function CategoriesManagement() {
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 hidden sm:table-cell">
                   Description
                 </th>
                 <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
@@ -124,7 +124,7 @@ export default function CategoriesManagement() {
                       />
                       {category.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                    <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                       {category.description}
                     </td>
                     <td className="px-6 py-4 text-right text-sm">
@@ -152,7 +152,7 @@ export default function CategoriesManagement() {
                         <td className="px-6 py-4 text-sm text-gray-900 pl-12">
                           {subCategory.name}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
                           {subCategory.description}
                         </td>
                         <td className="px-6 py-4 text-right text-sm">

@@ -71,7 +71,7 @@ export default function ServicesPage() {
   return (
     <div className="bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16 sm:py-24">
+      <section className="relative overflow-hidden bg-primary-700 py-16 sm:py-24">
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-5" />
         
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">

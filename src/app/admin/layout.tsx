@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import Sidebar from "./components/Sidebar";
+import AdminLayoutClient from "./components/AdminLayoutClient";
 
 export default async function AdminLayout({
   children,
@@ -13,10 +13,5 @@ export default async function AdminLayout({
     redirect("/sign-in");
   }
 
-  return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
-    </div>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }
