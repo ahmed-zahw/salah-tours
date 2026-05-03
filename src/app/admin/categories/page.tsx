@@ -124,7 +124,7 @@ export default function CategoriesManagement() {
                       />
                       {category.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell">
+                    <td className="px-6 py-4 text-sm text-gray-500 hidden sm:table-cell truncate max-w-xs">
                       {category.description}
                     </td>
                     <td className="px-6 py-4 text-right text-sm">

@@ -12,7 +12,14 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{
+      elements: {
+        card: "bg-primary-100",
+        footer: "hidden",
+        formFieldLabel: 'text-white',
+        formButtonPrimary: 'bg-primary-800 text-white'
+      }
+    }}>
       <QueryClientProvider client={queryClient}>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </QueryClientProvider>

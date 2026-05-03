@@ -72,19 +72,21 @@ export default function Sidebar({ isOpen = true, onClose }: Readonly<SidebarProp
         </div>
 
         {/* User Info */}
-        <div className="px-4 py-3 bg-primary-900 border-b border-primary-700">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-primary-700 rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-primary-100" />
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-white">
-                {user?.fullName || user?.emailAddresses[0]?.emailAddress || "Admin"}
-              </p>
-              <p className="text-xs text-primary-300">Administrator</p>
+        <Link href="/admin/profile" onClick={handleLinkClick}>
+          <div className="px-4 py-3 bg-primary-900 border-b border-primary-700 hover:bg-primary-800 transition-colors cursor-pointer">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-primary-700 rounded-full flex items-center justify-center">
+                <User className="h-5 w-5 text-primary-100" />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-white">
+                  {user?.fullName || user?.emailAddresses[0]?.emailAddress || "Admin"}
+                </p>
+                <p className="text-xs text-primary-300">Administrator</p>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
 
         <nav className="flex-1 space-y-1 px-2 py-4">
           {navigation.map((item) => (

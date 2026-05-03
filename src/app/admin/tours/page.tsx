@@ -74,7 +74,7 @@ export default function ToursManagement() {
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 hidden sm:table-cell">
                 Description
               </th>
               <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
@@ -86,7 +86,7 @@ export default function ToursManagement() {
             {tours?.map((tour) => (
               <tr key={tour.id}>
                 <td className="px-6 py-4 text-sm text-gray-900 text-wrap">{tour.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-14">
+                <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-6 hidden sm:table-cell">
                   {tour.description}
                 </td>
                 <td className="px-6 py-4 text-right text-sm">
