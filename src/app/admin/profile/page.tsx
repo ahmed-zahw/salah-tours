@@ -11,6 +11,7 @@ import Link from "next/link";
 import Button from "@salah-tours/components/ui/button/Button";
 import toast from "react-hot-toast";
 import ChangeEmail from "../components/ChangeEmail";
+import ChangePassword from "../components/ChangePassword";
 
 const profileFormSchema = z.object({
   firstName: z
@@ -158,7 +159,7 @@ export default function AdminProfilePage() {
             </div>
           </div>
 
-          <ChangeEmail /> 
+         
 
           <div className="flex justify-end gap-4 pt-4 border-t">
             <Button
@@ -174,6 +175,17 @@ export default function AdminProfilePage() {
           </div>
         </form>
       </div>
+
+<div className="bg-white p-6 mt-6">
+       <ChangeEmail /> 
+</div>
+
+<div className="bg-white p-6 mt-6">
+       <ChangePassword />
+</div>
+
+         
+
 
       {/* Account Info Section */}
       <div className="bg-white rounded-lg shadow-sm p-6 mt-6">

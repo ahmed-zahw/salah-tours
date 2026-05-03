@@ -103,6 +103,15 @@ export default function ChangeEmail() {
 
   return (
     <div>
+           <div className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">
+          Change Email
+        </h2>
+        <p className="text-sm text-gray-600">
+          Update your primary email address. You&apos;ll receive a verification code to confirm the change.
+        </p>
+      </div>
+
       {(step === "enterEmail" || step === "done") && (
         <div className="flex  flex-col justify-between gap-4">
           <section className="grow">
